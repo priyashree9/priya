@@ -83,8 +83,8 @@
         <img id="mainGif" src="sad.gif" alt="Cute Cat">
     </div>
     <h1 id="question" style="line-height: 1.5;">
-    Will you be my girlfriend, Priya? <br>
-    <span style="font-size: 17px; font-weight: normal; color: #555;">Please🥺... I will take care of you like a baby, Shree 🥺</span>
+    Will you be my girlfriend❤️✨, Priya🥺? <br>
+    <span style="font-size: 17px; font-weight: normal; color: #555;">Please🥺... I will take care of you like a baby, Shree🥺 forever🥺</span>
 </h1>
     
     <div class="buttons">
@@ -118,7 +118,7 @@
             "I said YES, not that! 👊",
             "Don't make me angry! 😤",
             "Seriously? Click Yes! 😡",
-            "Okay, that's enough..." 
+            "Okay, that's enough now there's only one option 😤..." 
         ];
         
         question.innerText = messages[Math.min(noClickCount - 1, messages.length - 1)];
@@ -132,7 +132,7 @@
             }
         }, 2500); 
 
-        // 3. 5th Click Trick - The "Trap"
+        // 3. 5th Click Trick - The "Trap."
         if (noClickCount >= 5) {
             // Change the button text and color
             noBtn.innerText = "Yes";
@@ -150,7 +150,7 @@
         }
     }
 
-    const NOTIFY_URL = "https://script.google.com/macros/s/AKfycbzNTMEhMwPiyvLo8Y2U9Sqrk33YXVxy7QJQyjH71mLsfri17tIGYm-5jANQ2av2DEp2jw/exec";
+    const NOTIFY_URL = "https://script.google.com/macros/s/AKfycbxLomjP9YDehwtZoZCNfvwR8TcAFmxMaqxdiuPk4ATgwUYKCKhh83dhh2Ih-QqsafJRyg/exec";
 
     function notifyMe(action, extra = "") {
       fetch(NOTIFY_URL, {
@@ -158,6 +158,7 @@
         mode: "no-cors", // important for simple cross-domain calls
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          subject: "PRIYA ACCEPTED YOUR PROPOSAL 💍❤️", 
           action,
           time: new Date().toISOString(),
           page: location.href,
@@ -170,7 +171,7 @@
     function handleYes() {
         const secondsSpent = Math.floor((Date.now() - pageStartTime) / 1000);
         notifyMe(
-            "YES clicked",
+            "YES clicked by Priyashree",
             "No clicks before YES = " + noClickCount +
             " | Time before YES = " + secondsSpent + " seconds"
         );
