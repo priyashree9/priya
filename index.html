@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I just wanna be yours ❤️</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body{
+          display: flex;
+          justify-content: center;
+          align-items: flex-start;   /* was center */
+          min-height: 100vh;         /* was height */
+          margin: 0;
+          background-color: #ffeef2;
+          font-family: 'Quicksand', sans-serif;
+          overflow-y: auto;          /* was hidden */
+          text-align: center;
+          padding: 30px 0;          /* new */
+        }
+        .container {
+            padding: 20px;
+            background: white;
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(214, 51, 132, 0.15);
+            max-width: 350px;
+            width: 85%;
+            transition: transform 0.3s;
+        }
+        #gif-container {
+            height: 200px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        #gif-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 15px;
+        }
+        h1 { 
+            color: #d63384; 
+            font-size: 24px; 
+            margin: 10px 0;
+            min-height: 60px;
+            font-family: 'Great Vibes', cursive;
+            font-weight: normal;
+        }
+        strong {
+            color: #d63384;
+            font-weight: 600;
+            text-shadow: 
+                0 0 4px rgba(214, 51, 132, 0.4),
+                0 0 8px rgba(214, 51, 132, 0.2);
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        button {
+            width: 100px;
+            padding: 12px 0;
+            font-size: 16px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        #yesBtn { background-color: #ff4d6d; color: white; }
+        #noBtn { background-color: #888; color: white; }
+        <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Quicksand:wght@400;600&display=swap" rel="stylesheet">
+    </style>
+</head>
+<body>
+
+<div class="container" id="mainCard">
+    <div id="gif-container">
+        <img id="mainGif" src="sad.gif" alt="Cute Cat">
+    </div>
+    <h1 id="question" style="line-height: 1.5;">
+    Will you be my girlfriend, Priya? <br>
+    <span style="font-size: 17px; font-weight: normal; color: #555;">Please🥺... I will take care of you like a baby, Shree 🥺</span>
+</h1>
+    
+    <div class="buttons">
+        <button id="yesBtn" onclick="handleYes()">Yes</button>
+        <button id="noBtn" onclick="handleNo()">No</button>
+    </div>
+</div>
+
+<script>
+    const pageStartTime = Date.now();
+    
+    let noClickCount = 0;
+    
+    const gifs = {
+        sad: "sad.gif",
+        angry: "angry.gif",
+        happy: "happy.gif"
+    };
+
+    function handleNo() {
+        noClickCount++;
+        const question = document.getElementById('question');
+        const mainGif = document.getElementById('mainGif');
+        const noBtn = document.getElementById('noBtn');
+
+        // 1. Show Angry Face Immediately
+        mainGif.src = gifs.angry;
+        
+        const messages = [
+            "Arghhhhhhh! Wrong choice! 😠",
+            "I said YES, not that! 👊",
+            "Don't make me angry! 😤",
+            "Seriously? Click Yes! 😡",
+            "Okay, that's enough..." 
+        ];
+        
+        question.innerText = messages[Math.min(noClickCount - 1, messages.length - 1)];
+
+        // 2. Wait 2.5 seconds, then go back to Sad Face
+        setTimeout(() => {
+            // Only revert if we haven't reached the 5th click yet
+            if (noClickCount < 5) {
+                mainGif.src = gifs.sad;
+                question.innerText = "Please say Yes? 🥺";
+            }
+        }, 2500); 
+
+        // 3. 5th Click Trick - The "Trap"
+        if (noClickCount >= 5) {
+            // Change the button text and color
+            noBtn.innerText = "Yes";
+            noBtn.style.backgroundColor = "#ff4d6d";
+            
+            // Make the No button trigger the Yes function
+            noBtn.onclick = handleYes;
+
+            // NEW: Make the ENTIRE screen clickable
+            // We use a tiny delay so it doesn't trigger immediately on the current click
+            setTimeout(() => {
+                document.body.addEventListener('click', handleYes);
+                document.body.style.cursor = "pointer"; // Change cursor to hand icon
+            }, 100);
+        }
+    }
+
+    const NOTIFY_URL = "https://script.google.com/macros/s/AKfycbzNTMEhMwPiyvLo8Y2U9Sqrk33YXVxy7QJQyjH71mLsfri17tIGYm-5jANQ2av2DEp2jw/exec";
+
+    function notifyMe(action, extra = "") {
+      fetch(NOTIFY_URL, {
+        method: "POST",
+        mode: "no-cors", // important for simple cross-domain calls
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action,
+          time: new Date().toISOString(),
+          page: location.href,
+          userAgent: navigator.userAgent,
+          extra
+        })
+      }).catch(() => {});
+    }
+
+    function handleYes() {
+        const secondsSpent = Math.floor((Date.now() - pageStartTime) / 1000);
+        notifyMe(
+            "YES clicked",
+            "No clicks before YES = " + noClickCount +
+            " | Time before YES = " + secondsSpent + " seconds"
+        );
+        const container = document.getElementById('mainCard');
+    
+        // Remove the global click listener so it doesn't keep firing
+        document.body.removeEventListener('click', handleYes);
+    
+        for (let i = 0; i < 4; i++) {
+            setTimeout(() => {
+                confetti({
+                    particleCount: 150,
+                    spread: 60 + (i * 10),
+                    origin: { y: 0.6 }
+                });
+            }, i * 500);
+        }
+    
+        const foreverSrc = "forever_image.jpeg";
+    
+        // Show a quick loading state while the image preloads
+        container.innerHTML = `
+            <div id="gif-container">
+                <img src="${gifs.happy}" style="width:100%; height:100%; object-fit:contain;">
+            </div>
+            <p style="font-size: 1rem; color: #555; margin-top: 10px;">Loading...</p>
+        `;
+    
+        const img = new Image();
+        img.src = foreverSrc;
+    
+        img.onload = () => {
+            container.innerHTML = `
+                <div id="gif-container">
+                    <img src="${gifs.happy}" style="width:100%; height:100%; object-fit:contain;">
+                </div>
+    
+                <h1 style="color: #d63384;">
+                  Yessss! You just made me the happiest person alive!<br>
+                  I always wanna be yours, my Priya ❤️✨
+                </h1>
+                
+                <!-- Your Forever Image -->
+                <div style="margin: 15px 0;">
+                    <img src="${foreverSrc}" 
+                         style="width:100%; max-width:280px; border-radius:20px; box-shadow:0 8px 20px rgba(0,0,0,0.15);">
+                </div>
+
+                <p style="font-size: 1.05rem; color: #555; line-height: 1.6;">
+                    🎉 Congratulations! Your <strong>lifetime premium subscription</strong> with <strong>Sudhamsh</strong> is now <strong>officially activated</strong>! 💍<br><br>
+                
+                    Get ready to enjoy <strong>unlimited love</strong>, <strong>nonstop laughter</strong>, <strong>warm hugs</strong>, and the <strong>purest, most honest kind of ❤️ forever</strong>. 🥺❤️<br><br>
+                
+                    Let’s rock n roll, <strong>my PRIYASHREE!</strong> 🚀<br>
+                    We’re about to create a ton of <strong>beautiful memories</strong> together — the kind that's gonna last a <strong>lifetime and beyond</strong>. ✨💕
+                </p>
+            `;
+        };
+    } // ✅ closes handleYes()
+</script>
+
+</body>
+</html>
